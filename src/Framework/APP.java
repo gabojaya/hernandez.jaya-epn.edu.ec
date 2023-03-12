@@ -11,6 +11,7 @@ public enum APP {
     public static final String HJNOMBRE1_COMPLETO = "Gabriel Alexander Jaya Singo";
     public static final String HJCEDULA1 = "1754242632";
     public static final String HJNOMBRE2_COMPLETO = "Cristian Andrés Hernández Silva";
+    public static final String HJCEDULA2 = "1721138988";
 
     //Constantes con definicion  
     private final String  EXCEPTION_UNDEFINED;

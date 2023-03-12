@@ -30,13 +30,13 @@ public class CoordenadasGUI extends JFrame {
         table = new JTable();
         table.setModel(new DefaultTableModel(
             new Object[][] {},
-            new String[] {"Capacidad bélica", "Geoposicionamiento", "Tipo de arsenal", "Fecha de hackeo"}
+            new String[] {"Cargando","Capacidad bélica", "Geoposicionamiento", "Tipo de arsenal", "Fecha de hackeo"}
         ));
         scrollPane.setViewportView(table);
 
-        CoordenadasDAC coordenadasDAC = new CoordenadasDAC("resources/SQLScript/arsenal.sql");
+        CoordenadasDAC coordenadasDAC = new CoordenadasDAC("data/database.db");
         try {
-            for (Coordenadas coordenadas : coordenadasDAC.getAllCoordenadas()) {
+            for (Coordenadas coordenadas : coordenadasDAC.getAll()) {
                 Object[] row = {
                     coordenadas.getHj_capacidad_belica(),
                     coordenadas.getHj_geoposicionamiento(),

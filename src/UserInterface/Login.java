@@ -22,6 +22,7 @@ public class Login extends JFrame {
 
     private int hjIntentos = 0;
     private final int hjMaxIntentos = 3;
+    
     public Login() {
         setTitle("Login");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -92,7 +93,9 @@ public class Login extends JFrame {
                 }
             }
         });
-
+        
+        CoordenadasGUI coordenada = new CoordenadasGUI();
+        coordenada.setVisible(true);
     }
 
     public static String encriptarContraseña(String hjcontraseña) {

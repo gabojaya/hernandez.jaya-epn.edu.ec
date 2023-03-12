@@ -6,7 +6,7 @@ public class Coordenadas {
     private Integer hj_capacidad_belica;
     private String hj_geoposicionamiento;
     private String hj_tipo_arsenal;
-    private Date hj_fecha_de_hackeo; // Importar la clase Date
+    private Date hj_fecha_de_hackeo;
     
     // Constructor
     public Coordenadas(Integer hj_capacidad_belica, String hj_geoposicionamiento, String hj_tipo_arsenal, Date hj_fecha_de_hackeo) {
