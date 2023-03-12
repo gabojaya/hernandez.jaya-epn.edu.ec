@@ -1,8 +1,6 @@
 package BusinessLogic;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.List;
 
 import BusinessLogic.Entities.User;
 import DataAccess.UserDAC;
@@ -14,34 +12,18 @@ public class UserBL {
         this.userDAC = userDAC;
     }
 
-    public boolean validateUser(String username, String password) throws SQLException {
-        User user = userDAC.getUserByUsername(username);
-
-        if (user == null) {
-            return false;
-        }
-
-        String encryptedPassword = encryptPassword(password);
-
-        return encryptedPassword.equals(user.getPassword());
-    }
-
-    private String encryptPassword(String password) {
+    public boolean login(String username, String password) {
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            byte[] bytes = md.digest();
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            List<User> users = userDAC.getAllUsers();
+            for (User user : users) {
+                if (user.getHj_username().equals(username) && user.getHj_password().equals(password)) {
+                    return true;
+                }
             }
-
-            return sb.toString();
-        } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (SQLException e) {
+            System.out.println(">> (error) UserBL.login() "+ e.getMessage());
         }
+
+        return false;
     }
 }
-

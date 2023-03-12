@@ -57,22 +57,5 @@ public abstract class SQLiteDataHelper {
         return rs;
     }
 
-
-     
-
-// public void onOpen(SQLiteDatabase db) {}
-//     /**
-//      * Close any open database object.
-//      */
-//     public synchronized void close() {
-//         if (mIsInitializing) throw new IllegalStateException("Closed during initialization");
-//         if (mDatabase != null && mDatabase.isOpen()) {
-//             mDatabase.close();
-//             mDatabase = null;
-//         }
-//     }
 }
 
-/*
- * ref: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/database/sqlite/SQLiteOpenHelper.java
- */

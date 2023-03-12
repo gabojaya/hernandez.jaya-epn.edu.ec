@@ -12,7 +12,8 @@ DROP TABLE IF EXISTS HJ_ARSENAL;
 CREATE TABLE HJ_ARSENAL
 (   hj_capacidad_belica   INTEGER PRIMARY KEY AUTOINCREMENT,
     hj_geoposicionamiento VARCHAR(5) NOT NULL,
-    hj_tipo_arsenal       VARCHAR(20) NOT NULL
+    hj_tipo_arsenal       VARCHAR(20) NOT NULL,
+    hj_fecha_de_hackeo    VARCHAR(20) DEFAULT(datetime('now'))
 );
 ------------------------------------------------------------------------
 INSERT INTO HJ_ARSENAL   (hj_capacidad_belica, hj_geoposicionamiento, hj_tipo_arsenal )

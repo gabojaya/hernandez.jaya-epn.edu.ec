@@ -1,36 +1,29 @@
 package DataAccess;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import BusinessLogic.Entities.User;
 
-public class UserDAC {
-    private Connection conn;
+public class UserDAC extends SQLiteDataHelper {
 
-    public UserDAC(String dbPath) throws SQLException {
-        conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+    public UserDAC(String dbPathConnection) {
+        super(dbPathConnection);
     }
 
-    public User getUserByUsername(String username) throws SQLException {
-        String query = "SELECT * FROM HJ_USERS WHERE hj_username = ?";
-        PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setString(1, username);
-        ResultSet rs = stmt.executeQuery();
+    public List<User> getAllUsers() throws SQLException {
+        String sql = "SELECT * FROM HJ_USERS;";
+        ResultSet rs = getResultSet(sql);
+        List<User> users = new ArrayList<>();
 
-        if (rs.next()) {
+        while (rs.next()) {
+            String username = rs.getString("hj_username");
             String password = rs.getString("hj_password");
-            return new User(username, password);
-        } else {
-            return null;
+            User user = new User(username, password);
+            users.add(user);
         }
-    }
 
-    public void close() throws SQLException {
-        conn.close();
+        return users;
     }
 }
-
-
