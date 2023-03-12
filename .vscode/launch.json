@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Login",
+            "request": "launch",
+            "mainClass": "UserInterface.Login",
+            "projectName": "hernandez.jaya@epn.edu.ec_51effc6c"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "hernandez.jaya@epn.edu.ec_51effc6c"
+        },
+        {
+            "type": "nativeimage",
+            "request": "launch",
+            "name": "Launch Native Image",
+            "nativeImagePath": "${workspaceFolder}/build/native-image/application"
+        }
+    ]
+}
