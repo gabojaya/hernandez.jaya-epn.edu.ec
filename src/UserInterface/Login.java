@@ -4,100 +4,120 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+
 import javax.swing.*;
 
+import BusinessLogic.Entities.User;
+import DataAccess.UserDAC;
+import Framework.AppConfiguration;
+
 public class Login extends JFrame {
-    private JTextField tfUser;
-    private JPasswordField pfPassword;
-    private JLabel lbUser;
-    private JLabel lbPassword;
-    private JButton btnLogin;
-    
+    private JTextField hjUser;
+    private JPasswordField hjPassword;
+    private JLabel hjUserLogin;
+    private JLabel hjPasswordLogin;
+    private JButton hjLogin;
+
+    private int hjIntentos = 0;
+    private final int hjMaxIntentos = 3;
     public Login() {
         setTitle("Login");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(300, 150);
-        
-        
-        lbUser = new JLabel("User:");
-        tfUser = new JTextField(17);
-        lbPassword = new JLabel("Password:");
-        pfPassword = new JPasswordField(14);
-        btnLogin = new JButton("Ingresar");
-        
+
+        hjUserLogin = new JLabel("Usuario:");
+        hjUser = new JTextField(17);
+        hjPasswordLogin = new JLabel("Contraseña:");
+        hjPassword = new JPasswordField(14);
+        hjLogin = new JButton("Ingresar");
+
         JPanel panel = new JPanel();
-        panel.add(lbUser);
-        panel.add(tfUser);
-        panel.add(lbPassword);
-        panel.add(pfPassword);
-        panel.add(btnLogin);
-        
+        panel.add(hjUserLogin);
+        panel.add(hjUser);
+        panel.add(hjPasswordLogin);
+        panel.add(hjPassword);
+        panel.add(hjLogin);
+
         getContentPane().add(panel);
-        
-        btnLogin.addActionListener(new ActionListener() {
+
+        hjLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String user = tfUser.getText();
-                String password = new String(pfPassword.getPassword());
-                
+                int hjIntentosRestantes = 2;
+                String user = hjUser.getText();
+                String password = new String(hjPassword.getPassword());
+
                 // Encripta la contraseña ingresada
-                String encryptedPassword = encryptPassword(password);
-                
-                // Conecta a la base de datos y verifica el usuario y la contraseña
+                String encryptedPassword = encriptarContraseña(password);
+
+                // Verifica el usuario y la contraseña usando la clase DataAccess
+                UserDAC userDAC = new UserDAC(AppConfiguration.getDBPathConnection());
+                List<User> userList = null;
                 try {
-                    Connection conn = DriverManager.getConnection("jdbc:sqlite:database.db");
-                    String query = "SELECT password FROM users WHERE username = ?";
-                    PreparedStatement stmt = conn.prepareStatement(query);
-                    stmt.setString(1, user);
-                    ResultSet rs = stmt.executeQuery();
-                    
-                    if (rs.next()) {
-                        String storedPassword = rs.getString("password");
-                        String encryptedStoredPassword = encryptPassword(storedPassword);
+                    userList = userDAC.getAllUsers();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+
+                // Busca el usuario en la lista de usuarios y compara las contraseñas
+                boolean hjUserFound = false;
+                for (User retrievedUser : userList) {
+                    if (retrievedUser.getHj_username().equals(user)) {
+                        String retrievedPassword = retrievedUser.getHj_password();
                         
-                        if (encryptedPassword.equals(encryptedStoredPassword)) {
-                            JOptionPane.showMessageDialog(null, "Login successful");
+
+                        if (encryptedPassword.equals(retrievedPassword)) {
+                            JOptionPane.showMessageDialog(null, "Inicio de sesión correcto");
+                            hjIntentos = 0;
                         } else {
-                            JOptionPane.showMessageDialog(null, "Incorrect username or password");
+                            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrecta."+" Quedan "+(hjIntentosRestantes-hjIntentos)+" intentos");
+                            hjIntentos++;
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Incorrect username or password");
+                        hjUserFound = true;
+                        break;
                     }
+                }
+
+                if (!hjUserFound) {
+                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrecta."+" Quedan "+(hjIntentosRestantes-hjIntentos)+" intentos");
                     
-                    conn.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    hjIntentos++;
+                }
+                if (hjIntentos >= hjMaxIntentos) {
+                    JOptionPane.showMessageDialog(null, "Demasiados intentos fallidos. Saliendo de la aplicación.");
+                    System.exit(0);
                 }
             }
         });
+
     }
-    
-    private String encryptPassword(String password) {
+
+    public static String encriptarContraseña(String hjcontraseña) {
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            byte[] bytes = md.digest();
-            
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            // Obtener instancia de MessageDigest con algoritmo MD5
+            MessageDigest hjmd = MessageDigest.getInstance("MD5");
+
+            // Convertir contraseña a bytes y pasarla al MessageDigest
+            hjmd.update(hjcontraseña.getBytes());
+
+            // Obtener la suma de verificación resultante como matriz de bytes
+            byte[] hjdigest = hjmd.digest();
+
+            // Convertir la matriz de bytes a formato hexadecimal
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hjdigest) {
+                hexString.append(String.format("%02x", b & 0xff));
             }
-            
-            return sb.toString();
-        } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
+
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // Manejar la excepción si el algoritmo no está disponible
+            System.err.println("Error: " + e.getMessage());
             return null;
         }
     }
-    
-    public static void main(String[] args) {
-        Login login = new Login();
-        login.setVisible(true);
-    }
+
 }

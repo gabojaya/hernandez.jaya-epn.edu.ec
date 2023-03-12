@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CoordenadasGUI",
+            "request": "launch",
+            "mainClass": "UserInterface.CoordenadasGUI",
+            "projectName": "hernandez.jaya@epn.edu.ec_51effc6c"
+        },
+        {
+            "type": "java",
             "name": "Login",
             "request": "launch",
             "mainClass": "UserInterface.Login",

@@ -45,15 +45,11 @@ public abstract class SQLiteDataHelper {
         Connection conn = null;
         Statement  stmt = null;
         ResultSet  rs   = null;
-       // try {
+       
             conn = getConnection();            // jdbc:sqlite:data\\TinderPet.db 
             stmt = conn.createStatement();     // CRUD : select * ...
             rs   = stmt.executeQuery(sql);     //
-        // } 
-        // catch (SQLException e) {
-        //     System.out.println(e.getMessage());
-        //     throw new AppException(APP.GLOBAL.DB_EXCEPTION,"Failed to connect to database", e);
-        // }
+        
         return rs;
     }
 
